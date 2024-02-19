@@ -8,26 +8,34 @@ pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tessera
 st.title("Image to Text Converter")
 
 
-def convert(photo):
-    st.image(photo)
-    img = Image.open(photo)
-    text = pytesseract.image_to_string(img)
-    # text = pytesseract.image_to_string(img, lang='hin')
-    st.header("Your text is:")
-    st.write(text)
-
-
 choice = st.selectbox("Upload Image via",
-                      ("Select",
-                       "Camera",
-                       "File browser"))
+                      ["Camera",
+                       "File browser"])
 
-if choice == "Camera":
-    with st.expander("Start Camera"):
-        camera_image = st.camera_input("Camera")
-    if camera_image:
-        convert(camera_image)
-elif choice == "File browser":
-    uploaded_image = st.file_uploader('Upload image', type=['png', 'jpg', 'jpeg'])
-    if uploaded_image:
-        convert(uploaded_image)
+col1, col2 = st.columns(2)
+data = None
+text = None
+
+with col1:
+    if choice == "Camera":
+        with st.expander("Start Camera"):
+            data = st.camera_input("Camera")
+    elif choice == "File browser":
+        data = st.file_uploader('Upload image', type=['png', 'jpg', 'jpeg'])
+
+with col2:
+    if data:
+        st.image(data)
+        img = Image.open(data)
+        text = pytesseract.image_to_string(img, lang='eng+hin')
+
+st.markdown("----")
+
+if text:
+    col3, col4 = st.columns(2)
+
+    with col3:
+        st.code(text, language='text')
+
+    with col4:
+        st.text_area("Copy and paste the result here", height=400)
