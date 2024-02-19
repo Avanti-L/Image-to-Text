@@ -12,6 +12,7 @@ def convert(photo):
     st.image(photo)
     img = Image.open(photo)
     text = pytesseract.image_to_string(img)
+    # text = pytesseract.image_to_string(img, lang='hin')
     st.header("Your text is:")
     st.write(text)
 
